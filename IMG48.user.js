@@ -3,7 +3,7 @@
 // @author      hyww13
 // @namespace   http://paruru.csie.org/IMG48.html
 // @downloadURL http://paruru.csie.org/IMG48.user.js
-// @version     0.1
+// @version     0.2
 // @description IMG48
 // @include     7gogo.jp/*
 // @include     twitter.com/*
@@ -23,9 +23,21 @@
 // @copyright   2016, hyww13
 // ==/UserScript==
 
+
 (function() {
     'use strict';
-	var $imgContextmenu = $('<div id="imgContextmenu"><div class="options">Open</div><div class="options">Save</div><div class="options IMG48img">Imgur</div></div>').appendTo('body').hide();
+	
+	// http://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64-encoded-string
+	function Uint8ToString(u8a){
+		var CHUNK_SZ = 0x8000;
+		var c = [];
+		for (var i=0; i < u8a.length; i+=CHUNK_SZ) {
+			c.push(String.fromCharCode.apply(null, u8a.subarray(i, i+CHUNK_SZ)));
+		}
+		return c.join("");
+	}
+	
+	var $imgContextmenu = $('<div id="imgContextmenu"><div class="options">Open</div><div class="options">Save</div><div class="options">Save As</div><div class="options IMG48img">Imgur</div></div>').appendTo('body').hide();
 	//var $imgLoading = $('<div id="imgLoading" class="spinkitSpinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>').appendTo('body').hide();
 	// http://tobiasahlin.com/spinkit/
 	$(window).on('click', function(e){
@@ -37,12 +49,34 @@
 			url = url.replace(/(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3");	//g+
 			url = url.replace(/(https?:\/\/stat.ameba.jp\/.+\/)(.+)_(.+)/, "$1o$3");	//ameblo
 			url = url.replace(/(https?:\/\/.+.cdninstagram.com\/.+?\/)((s\d+x\d+\/)?)([^?]+)(\?.*)?/, "$1$4");	//igs
+			var filename = null;
 			switch($(e.target).text()){
 				case 'Open':
 					window.open(url, '_blank');
 					break;
+				case 'Save As':
+					filename = prompt('Filename?', url.replace(/\.(jpg|png|gif)(:orig#.+|\?.+)$/i,'.$1').replace(/^.+\/(.+)/, "$1"));
+					if(!filename)break;
 				case 'Save':
-					$('<a download href="'+url+'">')[0].click();
+					if(!filename)filename = url.replace(/\.(jpe?g|png)(:orig#.+|\?.+)$/i,'.$1').replace(/^.+\/(.+)/, "$1");
+					if(!url.match(/.+\.(png|jpe?g).*/i)){
+						$('<a download="'+filename+'" href="'+url+'">')[0].click();
+						break;
+					}
+					GM_xmlhttpRequest({
+						method: "GET",
+						url: url,
+						overrideMimeType: "text/plain; charset=x-user-defined",
+						onload: function(response) {
+							var data = new Uint8Array(response.responseText.length);
+							var j = 0;
+							while(j < data.length){
+								data[j] = response.responseText.charCodeAt(j);
+								j++;
+							}
+							$('<a download="'+filename+'" href="data:image/'+(url.match(/.+\.png.*/i)?'png':'jpg')+';base64,'+btoa(Uint8ToString(data))+'">')[0].click();
+						}
+					});
 					break;
 				case 'Imgur':
 					var win = window.open('', '_blank');
@@ -114,7 +148,7 @@
 			url = $(e.target).parents('.poster-image-container').prevAll('.player-wrapper').find('video').attr('src');
 			$('.IMG48img').hide();
 		}
-		else if(e.target.matches('.player-controls')){	//twitter video
+		else if(e.target.matches('.player-controls') || e.target.matches('.gif-play-pause')){	//twitter video and gif
 			url = $(e.target).prevAll('.player-wrapper').find('video').attr('src');
 			$('.IMG48img').hide();
 		}
