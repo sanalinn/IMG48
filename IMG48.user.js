@@ -3,7 +3,7 @@
 // @author      hyww13
 // @namespace   http://paruru.csie.org/IMG48.html
 // @downloadURL http://paruru.csie.org/IMG48.user.js
-// @version     0.4
+// @version     0.5
 // @description IMG48
 // @match       7gogo.jp/*
 // @match       twitter.com/*
@@ -21,6 +21,7 @@
 // @connect     ngt48.com
 // @connect     favclip.com
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
+// @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
 // @grant       GM_addStyle
 // @grant       GM_xmlhttpRequest
 // @copyright   2016, hyww13
@@ -91,8 +92,12 @@
 												data[j] = response.responseText.charCodeAt(j);
 												j++;
 											}
-											console.log('Download using data URI');
-											$('<a download="'+filename+'" href="data:'+type+';base64,'+btoa(Uint8ToString(data))+'">')[0].click();
+											//url = 'data:'+type+';base64,'+btoa(Uint8ToString(data));
+											//$('<a download="'+filename+'" href="+'+url+'">')[0].click();
+											//console.log('Download using data URI\n'+url)
+											console.log('Downlaod using Blob');
+											var blob = new Blob([data], {'type': type});
+											saveAs(blob, filename);
 										}
 									});
 								}
@@ -115,8 +120,12 @@
 									data[j] = response.responseText.charCodeAt(j);
 									j++;
 								}
-								console.log('Download using data URI');
-								$('<a download="'+filename+'" href="data:'+type+';base64,'+btoa(Uint8ToString(data))+'">')[0].click();
+								//url = 'data:'+type+';base64,'+btoa(Uint8ToString(data));
+								//$('<a download="'+filename+'" href="+'+url+'">')[0].click();
+								//console.log('Download using data URI\n'+url)
+								console.log('Downlaod using Blob');
+								var blob = new Blob([data], {'type': type});
+								saveAs(blob, filename);
 							}
 						});
 					}
