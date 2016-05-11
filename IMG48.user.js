@@ -3,20 +3,15 @@
 // @author      hyww13
 // @namespace   http://paruru.csie.org/IMG48.html
 // @downloadURL http://paruru.csie.org/IMG48.user.js
-// @version     0.3
+// @version     0.4
 // @description IMG48
-// @include     7gogo.jp/*
-// @include     twitter.com/*
-// @include     plus.google.com/*
-// @include     ngt48.com/photolog*
-// @include     ameblo.jp/*
-// @include     www.instagram.com/*
 // @match       7gogo.jp/*
 // @match       twitter.com/*
 // @match       plus.google.com/*
 // @match       ngt48.com/photolog*
 // @match       ameblo.jp/*
 // @match       www.instagram.com/*
+// @match       logirl.favclip.com/*
 // @connect     imgur.com
 // @connect     7gogo.jp
 // @connect     twimg.com
@@ -24,6 +19,7 @@
 // @connect     ameba.jp
 // @connect     cdninstagram.com
 // @connect     ngt48.com
+// @connect     favclip.com
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @grant       GM_addStyle
 // @grant       GM_xmlhttpRequest
@@ -52,6 +48,7 @@
 			url = url.replace(/(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3");	//g+
 			url = url.replace(/(https?:\/\/stat.ameba.jp\/.+\/)(.+)_(.+)/, "$1o$3");	//ameblo
 			url = url.replace(/(https?:\/\/.+.cdninstagram.com\/.+?\/)((s\d+x\d+\/)?)([^?]+)(\?.*)?/, "$1$4");	//igs
+			url = url.replace(/(.+.favclip.com\/.+?)(_(large|medium)|\?size=\d+)+/, "$1");	//logirl
 			var filename = null;
 			var type = null;
 			switch($(e.target).text()){
@@ -189,6 +186,9 @@
 		else if(e.target.matches('div.GalleryNav')){	//twitter
 			url = $(e.target).prevAll('.Gallery-media').find('img').attr('src');
 		}
+		else if(e.target.matches('div.ProfileCanopy-header')){	//twitter user header
+			url = $(e.target).find('.ProfileCanopy-headerBg img').attr('src');
+		}
 		else if(e.target.matches('.poster-image-container *')){	//twitter video thumb
 			url = $(e.target).parents('.poster-image-container').prevAll('.player-wrapper').find('video').attr('src');
 			$('.IMG48img').hide();
@@ -200,6 +200,9 @@
 		else if(e.target.matches('.player-controls') || e.target.matches('.gif-play-pause')){	//twitter video and gif
 			url = $(e.target).prevAll('.player-wrapper').find('video').attr('src');
 			$('.IMG48img').hide();
+		}
+		else if(e.target.matches('div.article-detail-top-image') || e.target.matches('a.masonry-thumb') || e.target.matches('div.article-item-thumb')){	//logirl header or thumb for link
+			url = $(e.target).find('img').attr('src');
 		}
 		else if($(e.target).parents('a[href^="/p/"]').length>0){	//ig list
 			url = $(e.target).parents('a').find('img').attr('src');
@@ -214,7 +217,9 @@
 		return false;
 	});
 	GM_addStyle([
-	'#imgContextmenu{z-index: 9999; position: fixed; background-color: white; width: 120px;}',
-	'.options{text-align: left; color: black; font-family: sans-serif; font-size: 15px; cursor: default; padding: 3px;}',
-	'.options:hover{background-color: #2196F3;}'].join(''));
+		'*{pointer-events: auto!important; }',
+		'#imgContextmenu{z-index: 9999; position: fixed; background-color: white; width: 120px;}',
+		'.options{text-align: left; color: black; font-family: sans-serif; font-size: 15px; cursor: default; padding: 3px;}',
+		'.options:hover{background-color: #2196F3;}'
+	].join(''));
 })();
