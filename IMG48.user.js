@@ -3,7 +3,7 @@
 // @author      hyww13
 // @namespace   http://paruru.csie.org/IMG48.html
 // @downloadURL http://paruru.csie.org/IMG48.user.js
-// @version     0.5
+// @version     0.51
 // @description IMG48
 // @match       7gogo.jp/*
 // @match       twitter.com/*
@@ -14,6 +14,7 @@
 // @match       logirl.favclip.com/*
 // @connect     imgur.com
 // @connect     7gogo.jp
+// @connect     stat.7gogo.jp
 // @connect     twimg.com
 // @connect     googleusercontent.com
 // @connect     ameba.jp
