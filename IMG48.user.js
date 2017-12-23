@@ -224,7 +224,7 @@
     }
   });
   $(window).on('contextmenu', function(e){
-    console.log(e);
+    console.log(e.target);
     $('.PlayableMedia-player iframe').each(function(){$(this)[0].contentWindow.document.querySelector('#imgContextmenu').style.display='none';});
     $('#imgContextmenu *').show();
     var url;
@@ -275,15 +275,10 @@
       console.log('twitter user header');
       url = $(e.target).find('.ProfileCanopy-headerBg img').attr('src')+"#.jpg";
     }
-    else if(e.target.matches('.poster-image-container') || e.target.matches('.poster-image-container *') || e.target.matches('.player-controls') || e.target.matches('.gif-play-pause')){	//twitter video thumb, video, and GIF
-      if($('#vine-frame').length>0){
-        alert('Please start playing the video and try again.');
-        return false;
-        //url = $(e.target).attr('style').replace(/.+url\("([^"]+)"\).*/, "$1");
-      }
-      console.log('twitter mp4');
-      $('#imgContextmenu .IMG48img').hide();
-      var id = document.location.href.replace(/.+videos\/tweet\/(\d+).+/, "$1");
+    else if(e.target.matches('.PlayableMedia-player *') || e.target.matches('.PlayableMedia-player')) { //twitter video and GIF
+      console.log('twitter video');
+      var id = $(e.target).parents('.tweet').data('tweet-id');
+      console.log(id);
       if(twitter_video_cache[id]){
         $('#imgContextmenu').show().css({top:e.clientY+'px', left:e.clientX+'px'});
         $('#imgContextmenu').attr('data-url', url);
@@ -292,7 +287,7 @@
       else{
         GM_xmlhttpRequest({
           method: 'GET',
-          url: 'https://api.twitter.com/1.1/statuses/show.json?id='+id,
+          url: 'https://api.twitter.com/1.1/statuses/show.json?tweet_mode=extended&id='+id,
           headers: {
             "Authorization": "Bearer AAAAAAAAAAAAAAAAAAAAAF5bgwAAAAAAEeFg9GAGinIya%2Fyqmd5adupB1MI%3DydwpCYe0CKMJiBhFQO0xucMMt31dy9lDIGOEbG4JlXQt3Iqb7c"
           },
