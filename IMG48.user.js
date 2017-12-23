@@ -96,7 +96,6 @@
   $(window).on('click', function(e){
     console.log(e);
     $('#imgContextmenu').hide();
-    $('.PlayableMedia-player iframe').each(function(){$(this)[0].contentWindow.document.querySelector('#imgContextmenu').style.display='none';});
     if(e.target.matches('.options')){
       var url = $(e.target.parentNode).attr('data-url').replace(/^(https?:\/\/pbs.twimg.com\/media\/.+)(\.[a-zA-Z]+)(:.+)?/, "$1$2:orig#$2");	//twitter
       url = url.replace(/^(https?:\/\/pbs\.twimg\.com\/profile_images\/\d+\/.+)_(.+)\.(.+)/, "$1.$3");	//twitter avatar
@@ -225,7 +224,6 @@
   });
   $(window).on('contextmenu', function(e){
     console.log(e.target);
-    $('.PlayableMedia-player iframe').each(function(){$(this)[0].contentWindow.document.querySelector('#imgContextmenu').style.display='none';});
     $('#imgContextmenu *').show();
     var url;
     if(e.target.matches('img.imgeventnone')){	//ngt
