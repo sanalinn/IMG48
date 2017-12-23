@@ -224,6 +224,7 @@
   });
   $(window).on('contextmenu', function(e){
     console.log(e.target);
+    $imgContextmenu.removeAttr('data-url');
     $imgContextmenu.find('*').show();
     var url;
     if(e.target.matches('img.imgeventnone')){	//ngt
