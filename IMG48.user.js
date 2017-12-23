@@ -9,6 +9,10 @@
 // @match       twitter.com/*
 // @match       plus.google.com/*
 // @match       ngt48.com/photolog*
+// @match       www2.ske48.co.jp/*
+// @match       www.ske48.co.jp/blog*
+// @match       spn.ske48.co.jp/report*
+// @match       sp.ske48.co.jp/*
 // @match       ameblo.jp/*
 // @match       www.instagram.com/*
 // @match       vine.co/*
@@ -25,6 +29,7 @@
 // @connect     cdninstagram.com
 // @connect     fbcdn.net
 // @connect     ngt48.com
+// @connect     ske48.co.jp
 // @connect     vine.co
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
@@ -95,12 +100,12 @@
     console.log(e);
     $imgContextmenu.hide();
     if(e.target.matches('.options')){
-      var url = $imgContextmenu.attr('data-url').replace(/^(https?:\/\/pbs.twimg.com\/media\/.+)(\.[a-zA-Z]+)(:.+)?/, "$1$2:orig#$2");	//twitter
-      url = url.replace(/^(https?:\/\/pbs\.twimg\.com\/profile_images\/\d+\/.+)_(.+)\.(.+)/, "$1.$3");	//twitter avatar
-      url = url.replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3").replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+)=w\d+-h\d+(-k|-rw|-no|-fh|-d)*/,"$1=s0");	//g+
-      url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?cpd=\d+$/, "$1");	//ameblo
-      url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(\?.*)?/, "$1$4");	//igs
-      url = url.replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t06000800p(\..+)/, "$1o14401920p$2").replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t08000600p(\..+)/, "$1o19201440p$2");	//755
+      var url = $imgContextmenu.attr('data-url').replace(/^(https?:\/\/pbs.twimg.com\/media\/.+)(\.[a-zA-Z]+)(:.+)?/, "$1$2:orig#$2");  //twitter
+      url = url.replace(/^(https?:\/\/pbs\.twimg\.com\/profile_images\/\d+\/.+)_(.+)\.(.+)/, "$1.$3");  //twitter avatar
+      url = url.replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3").replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+)=w\d+-h\d+(-k|-rw|-no|-fh|-d)*/,"$1=s0"); //g+
+      url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?cpd=\d+$/, "$1");  //ameblo
+      url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(\?.*)?/, "$1$4");  //igs
+      url = url.replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t06000800p(\..+)/, "$1o14401920p$2").replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t08000600p(\..+)/, "$1o19201440p$2");  //755
       var filename = null;
       var type = null;
       switch($(e.target).text()){
@@ -224,50 +229,58 @@
     $imgContextmenu.removeAttr('data-url');
     $imgContextmenu.find('*').show();
     var url;
-    if(e.target.matches('img.imgeventnone')){	//ngt
+    if(e.target.matches('img.imgeventnone')){ //ngt
       console.log('ngt single');
       url = $(e.target).prev('img.imgprotect').attr('src');
       $imgContextmenu.find('div:contains(Imgur)').hide();
     }
-    else if(e.target.matches('span.image_bg')){	//ngt list
+    else if(e.target.matches('span.image_bg')){ //ngt list
       console.log('ngt list');
       url = $(e.target).css('background-image').replace(/^url\("(.+)"\)$/, "$1");
       $imgContextmenu.find('div:contains(Imgur)').hide();
+    }
+    else if(e.target.matches('span.guard')){  //ske list spn
+      console.log('ske list');
+      url = $(e.target).parents('.blog_img').find('img.cont_img').attr('src').replace(/(.+\/)(blog_thumbnail)(\/.+)/, "$1blog2$3");
+    }
+    else if(e.target.matches('img[src$="spacer.gif"]')){  //ske single pc
+      console.log('ske single');
+      url = $(e.target).parent('p').css('background-image').replace(/^url\("(.+\/)(blog)(\/.+)"\)$/, "$1blog2$3");  
     }
     else if(e.target.matches('img')){
       console.log('img');
       url = e.target.src;
     }
-    else if(e.target.matches('div#nextNavi')){	//ameblo single
+    else if(e.target.matches('div#nextNavi')){  //ameblo single
       console.log('ameblo single');
       url = $('#imgBox img').attr('src');
     }
-    else if(e.target.matches('div.Owner__headerImage')){	//755 header
+    else if(e.target.matches('div.Owner__headerImage')){  //755 header
       console.log('755 header');
       url = $(e.target).attr('style').replace(/.+url\("?([^"]+)"?\)(.+)?/, "$1");
     }
     /* 755 doesn't block downloading video
-		else if($(e.target).is('video[src^="https://moviestat.7gogo.jp/output/"]')){	//755 video
-			console.log('755 video');
-			url = e.target.src;
-			$imgContextmenu.find('.IMG48img').hide();
-		}
-		*/
+    else if($(e.target).is('video[src^="https://moviestat.7gogo.jp/output/"]')){  //755 video
+      console.log('755 video');
+      url = e.target.src;
+      $imgContextmenu.find('.IMG48img').hide();
+    }
+    */
     /* removed because cannot get URL of full-sized photo
-		else if($(e.target).is('div.ImageMovie[style*="stat.7gogo.jp/appimg_images"]')){	//755 grid
-			console.log('755 grid');
-			url = $(e.target).attr('style').replace(/.+url\("?([^"]+)"?\)(.+)?/, "$1");
-		}
-		*/
-    else if(e.target.matches('div.GalleryNav')){	//twitter
+    else if($(e.target).is('div.ImageMovie[style*="stat.7gogo.jp/appimg_images"]')){  //755 grid
+      console.log('755 grid');
+      url = $(e.target).attr('style').replace(/.+url\("?([^"]+)"?\)(.+)?/, "$1");
+    }
+    */
+    else if(e.target.matches('div.GalleryNav')){  //twitter
       console.log('twitter');
       url = $(e.target).prevAll('.Gallery-media').find('img').attr('src');
     }
-    else if(e.target.matches('div.stream div.media-overlay')){	//twitter stream
+    else if(e.target.matches('div.stream div.media-overlay')){  //twitter stream
       console.log('twitter stream');
       url = $(e.target).prevAll('img').attr('src');
     }
-    else if(e.target.matches('div.ProfileCanopy-header')){	//twitter user header
+    else if(e.target.matches('div.ProfileCanopy-header')){  //twitter user header
       console.log('twitter user header');
       url = $(e.target).find('.ProfileCanopy-headerBg img').attr('src')+"#.jpg";
     }
@@ -315,22 +328,22 @@
       }
       return false;
     }
-    else if(e.target.matches('video[poster^="https://v.cdn.vine.co/"]')){	//vine (may be embedded in twitter)
+    else if(e.target.matches('video[poster^="https://v.cdn.vine.co/"]')){ //vine (may be embedded in twitter)
       console.log('vine');
       url = $(e.target).attr('poster').replace(/.+(thumbs|videos)\/([^\/]+)\.(webm|mp4)?\.jpg.*/, "https://mtc.cdn.vine.co/r/videos_h264dash/$2.mp4");
-      url = url.replace(/.+(thumbs|videos)\/(\d+\/)+(.+)\.(webm|mp4)?\.jpg.*/, "https://mtc.cdn.vine.co/v/videos/$3.mp4");	// some URLs are in old? format
+      url = url.replace(/.+(thumbs|videos)\/(\d+\/)+(.+)\.(webm|mp4)?\.jpg.*/, "https://mtc.cdn.vine.co/v/videos/$3.mp4");  // some URLs are in old? format
       $imgContextmenu.find('.IMG48img').hide();
     }
-    else if($(e.target).parents('a[href^="/p/"]').length>0){	//ig list
+    else if($(e.target).parents('a[href^="/p/"]').length>0){  //ig list
       console.log('ig list');
       url = $(e.target).parents('a').find('img').attr('src');
     }
-    else if($(e.target).prev().is('div:has([src*="cdninstagram.com"], [src*="fbcdn.net"])')){	//ig single photo/video
+    else if($(e.target).prev().is('div:has([src*="cdninstagram.com"], [src*="fbcdn.net"])')){ //ig single photo/video
       console.log('ig single');
       url = $(e.target).prev('div').find('video').attr('src')||$(e.target).prev('div').find('img[src*="cdninstagram.com"], img[src*="fbcdn.net"]').attr('src');
       if($(e.target).prev('div').find('video').length>0)$('#imgContextmenu .IMG48img').hide();
     }
-    else if(e.target.matches('video')&&document.location.href.match(/.+www\.youtube\.com\/embed\/.+plus\.google\.com.+/)){	//plus video
+    else if(e.target.matches('video')&&document.location.href.match(/.+www\.youtube\.com\/embed\/.+plus\.google\.com.+/)){  //plus video
       console.log('plus video');
       url = $(e.target).attr('src')+"#.mp4";
       $imgContextmenu.find('.IMG48img').hide();
