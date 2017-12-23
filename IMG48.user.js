@@ -15,6 +15,7 @@
 // @match       sp.ske48.co.jp/*
 // @match       ameblo.jp/*
 // @match       www.instagram.com/*
+// @match       www.weibo.com/*
 // @match       vine.co/*
 // @match       www.youtube.com/embed/*plus.google.com*
 // @connect     imgur.com
@@ -31,6 +32,7 @@
 // @connect     ngt48.com
 // @connect     ske48.co.jp
 // @connect     vine.co
+// @connect     sinaimg.cn
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
 // @grant       GM_addStyle
@@ -106,6 +108,7 @@
       url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?cpd=\d+$/, "$1");  //ameblo
       url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(\?.*)?/, "$1$4");  //igs
       url = url.replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t06000800p(\..+)/, "$1o14401920p$2").replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t08000600p(\..+)/, "$1o19201440p$2");  //755
+      url = url.replace(/^(https?:\/\/.[a-z0-9]+\.sinaimg\.cn\/).+(\/.[a-z0-9]+)/,"$1large$2");
       var filename = null;
       var type = null;
       switch($(e.target).text()){
@@ -254,6 +257,10 @@
     else if(e.target.matches('div#nextNavi')){  //ameblo single
       console.log('ameblo single');
       url = $('#imgBox img').attr('src');
+    }
+    else if(e.target.matches('li.WB_pic')){ //weibo list
+      console.log('weibo');
+      url = $(e.target).children('img').attr('src').replace(/^(.+\.sinaimg\.cn\/).+(\/.+)/,"$1large$2");
     }
     else if(e.target.matches('div.Owner__headerImage')){  //755 header
       console.log('755 header');
