@@ -11,7 +11,6 @@
 // @match       ngt48.com/photolog*
 // @match       ameblo.jp/*
 // @match       www.instagram.com/*
-// @match       logirl.favclip.com/*
 // @match       vine.co/*
 // @match       www.youtube.com/embed/*plus.google.com*
 // @connect     imgur.com
@@ -26,7 +25,6 @@
 // @connect     cdninstagram.com
 // @connect     fbcdn.net
 // @connect     ngt48.com
-// @connect     favclip.com
 // @connect     vine.co
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
@@ -102,7 +100,6 @@
       url = url.replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3").replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+)=w\d+-h\d+(-k|-rw|-no|-fh|-d)*/,"$1=s0");	//g+
       url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?cpd=\d+$/, "$1");	//ameblo
       url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(\?.*)?/, "$1$4");	//igs
-      url = url.replace(/(\/\/.+.favclip.com\/.+?)(_(large|medium)|\?size=\d+)+/, "$1#.jpg");	//logirl
       url = url.replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t06000800p(\..+)/, "$1o14401920p$2").replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t08000600p(\..+)/, "$1o19201440p$2");	//755
       var filename = null;
       var type = null;
@@ -224,6 +221,7 @@
   });
   $(window).on('contextmenu', function(e){
     console.log(e.target);
+    $imgContextmenu.removeAttr('data-url');
     $imgContextmenu.find('*').show();
     var url;
     if(e.target.matches('img.imgeventnone')){	//ngt
@@ -322,10 +320,6 @@
       url = $(e.target).attr('poster').replace(/.+(thumbs|videos)\/([^\/]+)\.(webm|mp4)?\.jpg.*/, "https://mtc.cdn.vine.co/r/videos_h264dash/$2.mp4");
       url = url.replace(/.+(thumbs|videos)\/(\d+\/)+(.+)\.(webm|mp4)?\.jpg.*/, "https://mtc.cdn.vine.co/v/videos/$3.mp4");	// some URLs are in old? format
       $imgContextmenu.find('.IMG48img').hide();
-    }
-    else if(e.target.matches('div.article-detail-top-image') || e.target.matches('a.masonry-thumb') || e.target.matches('div.article-item-thumb')){	//logirl header or thumb for link
-      console.log('logirl');
-      url = $(e.target).find('img').attr('src');
     }
     else if($(e.target).parents('a[href^="/p/"]').length>0){	//ig list
       console.log('ig list');
