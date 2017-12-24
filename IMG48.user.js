@@ -3,7 +3,7 @@
 // @author      hyww13
 // @namespace   http://paruru.csie.org/IMG48.html
 // @downloadURL http://paruru.csie.org/IMG48.user.js
-// @version     1.0
+// @version     1.0.1
 // @description IMG48
 // @match       7gogo.jp/*
 // @match       twitter.com/*
@@ -17,6 +17,7 @@
 // @match       www.instagram.com/*
 // @match       www.weibo.com/*
 // @match       vine.co/*
+// @match       www.weibo.com/*
 // @match       www.youtube.com/embed/*plus.google.com*
 // @connect     imgur.com
 // @connect     7gogo.jp
@@ -31,13 +32,14 @@
 // @connect     fbcdn.net
 // @connect     ngt48.com
 // @connect     ske48.co.jp
+// @connect     sinaimg.cn
 // @connect     vine.co
 // @connect     sinaimg.cn
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
 // @grant       GM_addStyle
 // @grant       GM_xmlhttpRequest
-// @copyright   2016, hyww13
+// @copyright   2017, hyww13
 // ==/UserScript==
 
 
@@ -104,7 +106,7 @@
     if(e.target.matches('.options')){
       var url = $imgContextmenu.attr('data-url').replace(/^(https?:\/\/pbs.twimg.com\/media\/.+)(\.[a-zA-Z]+)(:.+)?/, "$1$2:orig#$2");  //twitter
       url = url.replace(/^(https?:\/\/pbs\.twimg\.com\/profile_images\/\d+\/.+)_(.+)\.(.+)/, "$1.$3");  //twitter avatar
-      url = url.replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3").replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+)=w\d+-h\d+(-k|-rw|-no|-fh|-d)*/,"$1=s0"); //g+
+      url = url.replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3").replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+)=(s0|w\d+|h\d+|p|k|rw|no|fh|d)(-s0|-w\d+|-h\d+|-p|-k|-rw|-no|-fh|-d)*/,"$1=s0");  //g+
       url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?cpd=\d+$/, "$1");  //ameblo
       url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(\?.*)?/, "$1$4");  //igs
       url = url.replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t06000800p(\..+)/, "$1o14401920p$2").replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t08000600p(\..+)/, "$1o19201440p$2");  //755
@@ -290,6 +292,10 @@
     else if(e.target.matches('div.ProfileCanopy-header')){  //twitter user header
       console.log('twitter user header');
       url = $(e.target).find('.ProfileCanopy-headerBg img').attr('src')+"#.jpg";
+    }
+    else if(e.target.matches('video[src^="https://v.cdn.vine.co/"]')){  //vine embedded in twitter
+      console.log('twitter vine');
+      url = e.target.src.replace(/\?.+$/,'');
     }
     else if(e.target.matches('.PlayableMedia-player *') || e.target.matches('.PlayableMedia-player')) { //twitter video and GIF
       console.log('twitter video');
