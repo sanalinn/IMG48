@@ -30,7 +30,7 @@
 // @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
 // @grant       GM_addStyle
 // @grant       GM_xmlhttpRequest
-// @copyright   2016, hyww13
+// @copyright   2017, hyww13
 // ==/UserScript==
 
 
