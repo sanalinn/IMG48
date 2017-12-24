@@ -17,7 +17,6 @@
 // @match       www.instagram.com/*
 // @match       www.weibo.com/*
 // @match       vine.co/*
-// @match       www.weibo.com/*
 // @match       www.youtube.com/embed/*plus.google.com*
 // @connect     imgur.com
 // @connect     7gogo.jp
@@ -34,7 +33,6 @@
 // @connect     ske48.co.jp
 // @connect     sinaimg.cn
 // @connect     vine.co
-// @connect     sinaimg.cn
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
 // @grant       GM_addStyle
@@ -262,7 +260,7 @@
     }
     else if(e.target.matches('li.WB_pic')){ //weibo list
       console.log('weibo');
-      url = $(e.target).children('img').attr('src').replace(/^(.+\.sinaimg\.cn\/).+(\/.+)/,"$1large$2");
+      url = $(e.target).children('img').attr('src');
     }
     else if(e.target.matches('div.Owner__headerImage')){  //755 header
       console.log('755 header');
