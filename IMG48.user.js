@@ -271,6 +271,10 @@
       console.log('twitter user header');
       url = $(e.target).find('.ProfileCanopy-headerBg img').attr('src')+"#.jpg";
     }
+    else if(e.target.matches('video[src^="https://v.cdn.vine.co/"]')){	//vine embedded in twitter
+      console.log('twitter vine');
+      url = e.target.src.replace(/\?.+$/,'');
+    }
     else if(e.target.matches('.PlayableMedia-player *') || e.target.matches('.PlayableMedia-player')) { //twitter video and GIF
       console.log('twitter video');
       var id = $(e.target).parents('.tweet').data('tweet-id');
