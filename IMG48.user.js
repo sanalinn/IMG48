@@ -15,6 +15,7 @@
 // @match       sp.ske48.co.jp/*
 // @match       ameblo.jp/*
 // @match       www.instagram.com/*
+// @match       www.weibo.com/*
 // @match       vine.co/*
 // @match       www.weibo.com/*
 // @match       www.youtube.com/embed/*plus.google.com*
@@ -33,6 +34,7 @@
 // @connect     ske48.co.jp
 // @connect     sinaimg.cn
 // @connect     vine.co
+// @connect     sinaimg.cn
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
 // @grant       GM_addStyle
