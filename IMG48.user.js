@@ -260,7 +260,7 @@
     }
     else if(e.target.matches('li.WB_pic')){ //weibo list
       console.log('weibo');
-      url = $(e.target).children('img').attr('src');
+      url = $(e.target).children('img')[0].src;
     }
     else if(e.target.matches('div.Owner__headerImage')){  //755 header
       console.log('755 header');
