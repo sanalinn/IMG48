@@ -3,7 +3,7 @@
 // @author      hyww13
 // @namespace   http://paruru.csie.org/IMG48.html
 // @downloadURL http://paruru.csie.org/IMG48.user.js
-// @version     1.0
+// @version     1.0.1
 // @description IMG48
 // @match       7gogo.jp/*
 // @match       twitter.com/*
