@@ -371,7 +371,6 @@
     e.stopImmediatePropagation();
   }, true); // useCapture=true to prevent being captured and stopImmediatePropagation.
   GM_addStyle([
-    '*{pointer-events: auto!important; }',
     '#imgContextmenu{z-index: 9999; position: fixed; background-color: white; width: 120px;}',
     '.options{text-align: left; color: black; font-family: sans-serif; font-size: 15px; cursor: default; padding: 3px;}',
     '.options:hover{background-color: #2196F3;}'
