@@ -98,7 +98,7 @@
     };
   }
   var $imgContextmenu = $('<div id="imgContextmenu"><div class="options">Open</div><div class="options">Save</div><div class="options IMG48img">Save As</div><div class="options">Imgur</div></div>').appendTo('body').hide();
-  $(window).on('click', function(e){
+  window.addEventListener('click', function(e){
     console.log(e);
     $imgContextmenu.hide();
     if(e.target.matches('.options')){
@@ -224,10 +224,11 @@
           //$imgLoading.show();
           break;
       }
-      return false;
+      e.preventDefault();
+      e.stopImmediatePropagation();
     }
-  });
-  $(window).on('contextmenu', function(e){
+  }, true); // useCapture=true to prevent being captured and stopImmediatePropagation.
+  window.addEventListener('contextmenu', function(e){
     console.log(e.target);
     $imgContextmenu.removeAttr('data-url');
     $imgContextmenu.find('*').show();
@@ -337,7 +338,9 @@
           }
         });
       }
-      return false;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return;
     }
     else if(e.target.matches('video[poster^="https://v.cdn.vine.co/"]')){ //vine (may be embedded in twitter)
       console.log('vine');
@@ -359,12 +362,13 @@
       url = $(e.target).attr('src')+"#.mp4";
       $imgContextmenu.find('.IMG48img').hide();
     }
-    else return true;
+    else return; // don't call e.preventDefault if nothing matches
     console.log(url);
     $imgContextmenu.show().css({top:e.clientY+'px', left:e.clientX+'px'});
     $imgContextmenu.attr('data-url', url);
-    return false;
-  });
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }, true); // useCapture=true to prevent being captured and stopImmediatePropagation.
   GM_addStyle([
     '*{pointer-events: auto!important; }',
     '#imgContextmenu{z-index: 9999; position: fixed; background-color: white; width: 120px;}',
