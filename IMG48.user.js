@@ -301,6 +301,7 @@
       var id = $(e.target).parents('.tweet').data('tweet-id');
       console.log(id);
       if(twitter_video_cache[id]){
+        url = twitter_video_cache[id];
         $imgContextmenu.show().css({top:e.clientY+'px', left:e.clientX+'px'});
         $imgContextmenu.attr('data-url', url);
         console.log(url);
