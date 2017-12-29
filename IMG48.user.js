@@ -18,6 +18,10 @@
 // @match       www.weibo.com/*
 // @match       vine.co/*
 // @match       www.youtube.com/embed/*plus.google.com*
+
+// @match       mdpr.jp/*
+// @connect     cdn.mdpr.jp
+
 // @connect     imgur.com
 // @connect     7gogo.jp
 // @connect     stat.7gogo.jp
