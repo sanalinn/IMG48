@@ -19,8 +19,11 @@
 // @match       vine.co/*
 // @match       www.youtube.com/embed/*plus.google.com*
 
+// @match       news.walkerplus.com/*
 // @match       mdpr.jp/*
 // @connect     cdn.mdpr.jp
+// @connect     news.walkerplus.com
+
 
 // @connect     imgur.com
 // @connect     7gogo.jp
@@ -254,6 +257,10 @@
     else if(e.target.matches('img[src$="spacer.gif"]')){  //ske single pc
       console.log('ske single');
       url = $(e.target).parent('p').css('background-image').replace(/^url\("(.+\/)(blog)(\/.+)"\)$/, "$1blog2$3");  
+    }
+    else if(e.target.matches('a.cp__img__img')){  //news.walkerplus
+      console.log('news walkerplus');
+      url = $(e.target).children('img')[0].src;  
     }
     else if(e.target.matches('img')){
       console.log('img');
