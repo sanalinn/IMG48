@@ -34,7 +34,7 @@
 // @connect     sinaimg.cn
 // @connect     vine.co
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
-// @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
+// @require     https://github.com/eligrey/FileSaver.js/raw/master/dist/FileSaver.min.js
 // @grant       GM_addStyle
 // @grant       GM_xmlhttpRequest
 // @copyright   2017, hyww13
@@ -106,7 +106,7 @@
       url = url.replace(/^(https?:\/\/pbs\.twimg\.com\/profile_images\/\d+\/.+)_(.+)\.(.+)/, "$1.$3");  //twitter avatar
       url = url.replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3").replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+)=(s0|w\d+|h\d+|p|k|rw|no|fh|d)(-s0|-w\d+|-h\d+|-p|-k|-rw|-no|-fh|-d)*/,"$1=s0");  //g+
       url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?cpd=\d+$/, "$1");  //ameblo
-      url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(\?.*)?/, "$1$4");  //igs
+      url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(.*?)/, "$1$4");  //igs
       url = url.replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t06000800p(\..+)/, "$1o14401920p$2").replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t08000600p(\..+)/, "$1o19201440p$2");  //755
       url = url.replace(/^(https?:\/\/.[a-z0-9]+\.sinaimg\.cn\/).+(\/.[a-z0-9]+)/,"$1large$2");
       var filename = null;
