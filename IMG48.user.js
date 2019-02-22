@@ -2,10 +2,11 @@
 // @name        IMG48
 // @author      hyww13
 // @namespace   http://paruru.csie.org/IMG48.html
-// @downloadURL http://paruru.csie.org/IMG48.user.js
-// @version     1.1.1
+// @downloadURL http://raccoon.mine.nu/resource/img48/img48.js
+// @version     1.1.1.2
 // @description IMG48
 // @match       7gogo.jp/*
+// @match       tweetdeck.twitter.com/*
 // @match       twitter.com/*
 // @match       plus.google.com/*
 // @match       ngt48.com/photolog*
@@ -13,27 +14,34 @@
 // @match       www.ske48.co.jp/blog*
 // @match       spn.ske48.co.jp/report*
 // @match       sp.ske48.co.jp/*
+// @match       www.keyakizaka46.com/*
+
 // @match       ameblo.jp/*
 // @match       www.instagram.com/*
+// @match       weibo.com/*
 // @match       www.weibo.com/*
 // @match       vine.co/*
 // @match       www.youtube.com/embed/*plus.google.com*
 
+// @match       news.dwango.jp/*
 // @match       mantan-web.jp/*
 // @match       www.oricon.co.jp/photo*
 // @match       www.oricon.co.jp/news*
 // @match       news.walkerplus.com/*
 // @match       mdpr.jp/*
-// @connect     cdn.mdpr.jp
+
+// @connect　　　img-mdpr.freetls.fastly.net
 // @connect     news.walkerplus.com
 // @connect     contents.oricon.co.jp
-
+// @connect     storage.mantan-web.jp
+// @connect     news-img.dwango.jp
+// @connect     green-img-news-dwango-jp-prod.s3.amazonaws.com
 
 // @connect     imgur.com
 // @connect     7gogo.jp
 // @connect     stat.7gogo.jp
 // @connect     moviestat.7gogo.jp
-// @connect     twimg.com
+// @connect     pbs.twimg.com
 // @connect     twitter.com
 // @connect     googleusercontent.com
 // @connect     googlevideo.com
@@ -45,7 +53,7 @@
 // @connect     sinaimg.cn
 // @connect     vine.co
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
-// @require     https://github.com/eligrey/FileSaver.js/raw/master/FileSaver.min.js
+// @require     https://github.com/eligrey/FileSaver.js/raw/master/dist/FileSaver.min.js
 // @grant       GM_addStyle
 // @grant       GM_xmlhttpRequest
 // @copyright   2017, hyww13
@@ -116,10 +124,16 @@
       var url = $imgContextmenu.attr('data-url').replace(/^(https?:\/\/pbs.twimg.com\/media\/.+)(\.[a-zA-Z]+)(:.+)?/, "$1$2:orig#$2");  //twitter
       url = url.replace(/^(https?:\/\/pbs\.twimg\.com\/profile_images\/\d+\/.+)_(.+)\.(.+)/, "$1.$3");  //twitter avatar
       url = url.replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+\/)(.+)(\/.+)/,"$1s0$3").replace(/^(https?:\/\/lh\d+.googleusercontent.com\/.+)=(s0|w\d+|h\d+|p|k|rw|no|fh|d)(-s0|-w\d+|-h\d+|-p|-k|-rw|-no|-fh|-d)*/,"$1=s0");  //g+
-      url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?cpd=\d+$/, "$1");  //ameblo
-      url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(\?.*)?/, "$1$4");  //igs
+      url = url.replace(/^(https?:\/\/stat\.ameba\.jp\/.+\/)(.+)_(.+)/, "$1o$3").replace(/^(https?:\/\/stat(\.profile)?\.ameba\.jp\/.+)\?[a-z]+=\d+$/, "$1");  //ameblo
+      url = url.replace(/^(https?:\/\/.+\.(cdninstagram\.com|fbcdn\.net)\/.+?\/)(s\d+x\d+\/|sh[0-9.]+\/|e\d+\/|c[0-9.]+\/)*([^?]+)(.*?)/, "$1$4");  //igs
       url = url.replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t06000800p(\..+)/, "$1o14401920p$2").replace(/^(https?:\/\/stat\.7gogo\.jp\/appimg_images\/.+\/)t08000600p(\..+)/, "$1o19201440p$2");  //755
-      url = url.replace(/^(https?:\/\/.[a-z0-9]+\.sinaimg\.cn\/).+(\/.[a-z0-9]+)/,"$1large$2");
+      url = url.replace(/^(https?:\/\/.[a-z0-9]+\.sinaimg\.cn\/).+(\/.[a-z0-9]+)/,"$1large$2"); //weibo
+      url = url.replace(/^(https?:\/\/.+\/uploads\/medium\/file\/.+\/).[a-z]+_(.[a-z0-9]+)/,"$1$2"); //dwango
+      url = url.replace(/^(https?:\/\/storage\.mantan-web\.jp\/images\/.+\/[0-9]+_)(size[^58]|[^size]+)(\..[a-z]+)/,"$1size9$3"); //mantan
+      url = url.replace(/^(https?:\/\/img-mdpr\.freetls\.fastly\.net\/.+\.[a-z]+)(\?.+)/,"$1"); //mdpr
+
+
+
       var filename = null;
       var type = null;
       switch($(e.target).text()){
@@ -266,10 +280,26 @@
       console.log('news walkerplus');
       url = $(e.target).children('img')[0].src;
     }
+
+
+
     else if(e.target.matches('img')){
       console.log('img');
       url = e.target.src;
     }
+    // main fanction
+
+
+    else if(e.target.matches('.fancybox-image-wrap')){  //dwango
+      console.log('dwango');
+      url = $(e.target).children('img')[0].src;
+    }
+    else if(e.target.matches('.slider_bg')){  //dwango2
+      console.log('dwango2');
+      url = $(e.target).css('background-image').replace(/^url\("(.+)"\)$/, "$1");
+    }
+
+
     else if(e.target.matches('div#nextNavi')){  //ameblo single
       console.log('ameblo single');
       url = $('#imgBox img').attr('src');
@@ -295,6 +325,11 @@
       url = $(e.target).attr('style').replace(/.+url\("?([^"]+)"?\)(.+)?/, "$1");
     }
     */
+    else if(e.target.matches('a.js-media-image-link')){  //tweet deck
+      console.log('tweetdeck');
+      url = $(e.target).css('background-image').replace(/^url\("(.+)"\)$/, "$1");
+    }
+
     else if(e.target.matches('div.GalleryNav')){  //twitter
       console.log('twitter');
       url = $(e.target).prevAll('.Gallery-media').find('img').attr('src');
@@ -386,7 +421,7 @@
     e.stopImmediatePropagation();
   }, true); // useCapture=true to prevent being captured and stopImmediatePropagation.
   GM_addStyle([
-    '#imgContextmenu{z-index: 9999; position: fixed; background-color: white; width: 120px;}',
+    '#imgContextmenu{z-index: 99999; position: fixed; background-color: white; width: 120px;}',
     '.options{text-align: left; color: black; font-family: sans-serif; font-size: 15px; cursor: default; padding: 3px;}',
     '.options:hover{background-color: #2196F3;}'
   ].join(''));
